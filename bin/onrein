@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+'use strict'
+
+var path = require('path')
+var Promise = require('bluebird')
+var ocl = require('ocl')
+var loader = ocl({
+  root: path.resolve(__dirname, '..', 'cmd'),
+  manuals: path.resolve(__dirname, '..', 'man')
+})
+
+function printResult(result) {
+  if (Array.isArray(result)) {
+    return result.forEach(function (item) {
+      printResult(result)
+    })
+  }
+
+  process.stdout.write(JSON.stringify(result))
+}
+
+(new Promise(function (resolve, reject) {
+  resolve(loader.run())
+}))
+  .then(printResult)
+  .catch(function (err) {
+    process.stderr.write((err.name || 'Error') + ': ' + (err.message || err))
+  })
