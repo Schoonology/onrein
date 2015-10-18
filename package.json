@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "A daemon lurking in your house, meddling with all your Things.",
   "main": "index.js",
+  "bin": {
+    "onrein": "bin/onrein"
+  },
   "scripts": {},
   "dependencies": {
     "bluebird": "~2.10.2",
