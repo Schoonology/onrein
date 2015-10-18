@@ -1,0 +1,5 @@
+Usage: onrein start MANIFEST
+
+Starts a long-running process, loading `MANIFEST` as a description of all the
+Things Onrein should manage. The manifest file should be a JSON file or a Node
+module exporting an Object with three keys, `account`, `curves`, and `devices`.

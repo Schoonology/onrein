@@ -10,7 +10,9 @@
   "dependencies": {
     "bluebird": "~2.10.2",
     "ocl": "~1.1.1",
-    "proxy-client": "~0.3.0"
+    "proxy-client": "~0.3.0",
+    "thermostat": "~1.0.0",
+    "traverse": "~0.6.6"
   },
   "devDependencies": {},
   "repository": {
