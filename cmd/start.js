@@ -45,11 +45,12 @@ function start(argv, options, loader) {
       return compiled
     })
   var curveData = {}
+  var deviceState = {}
 
   return WinkClient
     .login(manifest.account)
     .then(function (client) {
-      setInterval(function () {
+      return (function tick() {
         var now = Date.now()
 
         curves.forEach(function (curve) {
@@ -57,9 +58,14 @@ function start(argv, options, loader) {
         })
 
         devices.forEach(function (device) {
+          deviceState[device.key] = device(curveData)
           console.log('desired_state for %s: %j', device.key, device(curveData))
         })
-      }, 1000)
+
+        return client.setDeviceState(deviceState)
+          .delay(1000)
+          .then(tick)
+      }())
     })
 }
 
