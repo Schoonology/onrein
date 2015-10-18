@@ -1,0 +1,5 @@
+Usage: onrein status
+
+Queries the current status (`last_reading` in the Wink API) of all
+devices associated with the account defined in `MANIFEST`, printing a valid
+`devices` config to STDOUT. See `onrein start` for more information.
