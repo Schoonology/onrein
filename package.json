@@ -6,7 +6,8 @@
   "scripts": {},
   "dependencies": {
     "bluebird": "~2.10.2",
-    "ocl": "~1.1.1"
+    "ocl": "~1.1.1",
+    "proxy-client": "~0.3.0"
   },
   "devDependencies": {},
   "repository": {
