@@ -59,11 +59,13 @@ function start(argv, options, loader) {
 
         devices.forEach(function (device) {
           deviceState[device.key] = device(curveData)
-          console.log('desired_state for %s: %j', device.key, device(curveData))
         })
 
         return client.setDeviceState(deviceState)
-          .delay(1000)
+          .catch(function (err) {
+            process.stderr.write('Error during setDeviceState: %s', err.message || err)
+          })
+          .delay(5000)
           .then(tick)
       }())
     })
