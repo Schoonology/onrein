@@ -1,6 +1,6 @@
 {
   "name": "onrein",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A daemon lurking in your house, meddling with all your Things.",
   "main": "index.js",
   "bin": {
