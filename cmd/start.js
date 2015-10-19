@@ -1,6 +1,8 @@
 'use strict'
 
 var path = require('path')
+var util = require('util')
+var Promise = require('bluebird')
 var thermostat = require('thermostat')
 var traverse = require('traverse')
 var WinkClient = require('../lib/wink')
@@ -27,6 +29,13 @@ function compile(obj) {
 }
 
 /**
+ * Returns a hash of `obj` suitable for change detection.
+ */
+function hash(obj) {
+  return JSON.stringify(obj)
+}
+
+/**
  * Fulfills the `start` command. See README and `man/start` for more
  * information.
  */
@@ -46,25 +55,47 @@ function start(argv, options, loader) {
     })
   var curveData = {}
   var deviceState = {}
+  var deviceStateHash = {}
 
   return WinkClient
     .login(manifest.account)
     .then(function (client) {
+      process.stdout.write('Starting...\n')
+
       return (function tick() {
         var now = Date.now()
+        var changes = {}
+        var promise
 
         curves.forEach(function (curve) {
           curveData[curve.key] = curve(now)
         })
 
         devices.forEach(function (device) {
-          deviceState[device.key] = device(curveData)
+          var newState = device(curveData)
+          var newHash = hash(newState)
+
+          if (newHash !== deviceStateHash[device.key]) {
+            deviceState[device.key] = newState
+            deviceStateHash[device.key] = newHash
+            changes[device.key] = newState
+          }
         })
 
-        return client.setDeviceState(deviceState)
-          .catch(function (err) {
-            process.stderr.write('Error during setDeviceState: %s', err.message || err)
-          })
+        if (Object.keys(changes).length === 0) {
+          promise = Promise.resolve()
+        } else {
+          process.stdout.write(util.format('Setting device state to: %j\n', changes))
+          promise = client.setDeviceState(changes)
+            .catch(function (err) {
+              process.stderr.write(util.format('Error during setDeviceState: %s\n', err.message || err))
+            })
+            .then(function () {
+              process.stdout.write('Accepted.\n')
+            })
+        }
+
+        return promise
           .delay(5000)
           .then(tick)
       }())
