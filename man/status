@@ -1,4 +1,4 @@
-Usage: onrein status
+Usage: onrein status MANIFEST
 
 Queries the current status (`last_reading` in the Wink API) of all
 devices associated with the account defined in `MANIFEST`, printing a valid
